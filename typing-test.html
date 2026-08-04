@@ -88,6 +88,8 @@
         
         let totalCorrectCharsAllTime = 0;
         let totalTypedCharsAllTime = 0;
+        let totalCorrectWordsAllTime = 0;
+        let totalTypedWordsAllTime = 0;
         let finalWpm = 0;
         let finalAccuracy = 100;
 
@@ -104,18 +106,31 @@
 
             const typedValue = typingInput.value;
             let currentTypedLen = typedValue.length;
-            let currentCorrect = 0;
+            let currentCorrectChars = 0;
 
             for (let i = 0; i < currentTypedLen; i++) {
                 if (i < sampleTextString.length && typedValue[i] === sampleTextString[i]) {
-                    currentCorrect++;
+                    currentCorrectChars++;
                 }
             }
 
+            // If the user finishes the current paragraph, cycle to the next one instantly without losing progress
             if (currentTypedLen >= sampleTextString.length) {
-                totalCorrectCharsAllTime += currentCorrect;
+                totalCorrectCharsAllTime += currentCorrectChars;
                 totalTypedCharsAllTime += currentTypedLen;
 
+                const sampleWords = sampleTextString.trim().split(/\s+/);
+                const typedWords = typedValue.trim().split(/\s+/);
+                let currentCorrectWords = 0;
+                for (let i = 0; i < typedWords.length; i++) {
+                    if (i < sampleWords.length && typedWords[i] === sampleWords[i]) {
+                        currentCorrectWords++;
+                    }
+                }
+                totalCorrectWordsAllTime += currentCorrectWords;
+                totalTypedWordsAllTime += typedWords.length;
+
+                // Pick a new unique paragraph
                 let newIndex;
                 do {
                     newIndex = Math.floor(Math.random() * articlePool.length);
@@ -125,23 +140,36 @@
                 sampleTextString = articlePool[currentParagraphIndex];
                 document.getElementById('sourceText').innerText = sampleTextString;
                 
+                // Reset textarea for the next loop
                 typingInput.value = '';
                 return;
             }
 
-            let grandCorrect = totalCorrectCharsAllTime + currentCorrect;
-            let grandTyped = totalTypedCharsAllTime + currentTypedLen;
-
-            let currentAccuracy = grandTyped > 0 ? Math.round((grandCorrect / grandTyped) * 100) : 100;
-            accuracyDisplay.innerText = currentAccuracy + '%';
-            finalAccuracy = currentAccuracy;
-
+            // Character metrics for WPM speed calculation
+            let grandCorrectChars = totalCorrectCharsAllTime + currentCorrectChars;
             const timeElapsedMinutes = (60 - timeLeft) / 60;
             if (timeElapsedMinutes > 0) {
-                const wordsTyped = (grandCorrect / 5);
+                const wordsTyped = (grandCorrectChars / 5);
                 finalWpm = Math.round(wordsTyped / timeElapsedMinutes);
                 wpmDisplay.innerText = finalWpm + ' WPM';
             }
+
+            // Word-by-word accuracy calculation to prevent single typos from cascading and tanking accuracy
+            const sampleWords = sampleTextString.trim().split(/\s+/);
+            const typedWords = typedValue.trim().split(/\s+/);
+            let currentCorrectWords = 0;
+            for (let i = 0; i < typedWords.length; i++) {
+                if (i < sampleWords.length && typedWords[i] === sampleWords[i]) {
+                    currentCorrectWords++;
+                }
+            }
+
+            let grandCorrectWords = totalCorrectWordsAllTime + currentCorrectWords;
+            let grandTypedWords = totalTypedWordsAllTime + typedWords.length;
+
+            let currentAccuracy = grandTypedWords > 0 ? Math.round((grandCorrectWords / grandTypedWords) * 100) : 100;
+            accuracyDisplay.innerText = currentAccuracy + '%';
+            finalAccuracy = currentAccuracy;
         });
 
         function startTimer() {
@@ -150,17 +178,16 @@
                 timerDisplay.innerText = timeLeft + 's';
 
                 const typedValue = typingInput.value;
-                let currentCorrect = 0;
+                let currentCorrectChars = 0;
                 for (let i = 0; i < typedValue.length; i++) {
                     if (i < sampleTextString.length && typedValue[i] === sampleTextString[i]) {
-                        currentCorrect++;
+                        currentCorrectChars++;
                     }
                 }
-                let grandCorrect = totalCorrectCharsAllTime + currentCorrect;
-                let grandTyped = totalTypedCharsAllTime + typedValue.length;
+                let grandCorrectChars = totalCorrectCharsAllTime + currentCorrectChars;
                 let timeElapsedMinutes = (60 - timeLeft) / 60;
-                if (timeElapsedMinutes > 0 && grandCorrect > 0) {
-                    finalWpm = Math.round((grandCorrect / 5) / timeElapsedMinutes);
+                if (timeElapsedMinutes > 0 && grandCorrectChars > 0) {
+                    finalWpm = Math.round((grandCorrectChars / 5) / timeElapsedMinutes);
                     wpmDisplay.innerText = finalWpm + ' WPM';
                 }
 
