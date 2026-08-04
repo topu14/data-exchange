@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Exchange Operator Evaluation - Handwriting Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 min-h-screen relative flex items-center justify-center p-4 md:p-8">
+
+    <!-- Corner Logo -->
+    <div class="absolute top-6 left-6 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+        <img src="image_0.png" alt="Data Exchange Logo" class="h-8 object-contain">
+    </div>
+
+    <div class="max-w-5xl w-full bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-white/20">
+        <!-- Header Section -->
+        <div class="text-center mb-8 border-b border-slate-200 pb-6">
+            <h1 class="text-2xl font-extrabold text-slate-900">Data Exchange Operator Evaluation Process</h1>
+            
+            <div class="mt-4 flex flex-col items-center gap-1">
+                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Step 3 of 4</span>
+                <h2 class="text-xl font-bold text-slate-800">Cursive Handwriting Transcription Test</h2>
+            </div>
+            <p class="text-sm text-slate-500 mt-1">Examine the cursive image below and type out the word character-by-character as accurately as possible.</p>
+        </div>
+
+        <!-- Progress Tracker -->
+        <div class="flex justify-between items-center mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <span id="wordCounter" class="text-sm font-semibold text-slate-700">Word 1 of 5</span>
+            <span class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Evaluation Active</span>
+        </div>
+
+        <!-- Taller Cursive Image Display Area -->
+        <div class="mb-8 flex justify-center items-center bg-slate-100 p-10 min-h-[220px] rounded-2xl border border-slate-200 shadow-inner">
+            <img id="cursiveImage" src="" alt="Cursive Word" class="max-h-52 object-contain drop-shadow-sm">
+        </div>
+
+        <!-- Input Area -->
+        <div class="mb-6">
+            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Type what you see in the image:</label>
+            <input type="text" id="userInput" autofocus autocomplete="off" placeholder="Type word here..." 
+                class="w-full p-5 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-mono text-xl text-slate-800 placeholder-slate-400 bg-white shadow-inner">
+        </div>
+
+        <button onclick="submitWord()" 
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-4 rounded-2xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-lg">
+            Submit Word &rarr;
+        </button>
+    </div>
+
+    <script>
+        const allTestItems = [
+            { image: "cursive_1.png", answer: "Harrold" },
+            { image: "cursive_2.png", answer: "Bernard" },
+            { image: "cursive_3.png", answer: "Zacharias" },
+            { image: "cursive_4.png", answer: "Denis" },
+            { image: "cursive_5.png", answer: "Charles" },
+            { image: "cursive_6.png", answer: "Milton" },
+            { image: "cursive_7.png", answer: "Samuel" },
+            { image: "cursive_8.png", answer: "Alan" },
+            { image: "cursive_9.png", answer: "Thomas" },
+            { image: "cursive_10.png", answer: "Adriaan" },
+            { image: "cursive_11.png", answer: "Geoffrey" },
+            { image: "cursive_12.png", answer: "Felix" }
+        ];
+
+        // Randomly pick 5 unique items from the 12 available for each session
+        const testItems = [...allTestItems].sort(() => 0.5 - Math.random()).slice(0, 5);
+
+        let currentIndex = 0;
+        let correctCount = 0;
+
+        const cursiveImage = document.getElementById('cursiveImage');
+        const userInput = document.getElementById('userInput');
+        const wordCounter = document.getElementById('wordCounter');
+
+        function loadItem() {
+            if (currentIndex < testItems.length) {
+                cursiveImage.src = testItems[currentIndex].image;
+                wordCounter.innerText = `Word ${currentIndex + 1} of ${testItems.length}`;
+                userInput.value = '';
+                userInput.focus();
+            }
+        }
+
+        function submitWord() {
+            const userTyped = userInput.value.trim();
+            const correctWord = testItems[currentIndex].answer;
+
+            if (userTyped.toLowerCase() === correctWord.toLowerCase()) {
+                correctCount++;
+            }
+
+            currentIndex++;
+
+            if (currentIndex < testItems.length) {
+                loadItem();
+            } else {
+                finishHandwritingTest();
+            }
+        }
+
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitWord();
+            }
+        });
+
+        function finishHandwritingTest() {
+            let accuracy = Math.round((correctCount / testItems.length) * 100);
+            
+            let participantData = JSON.parse(sessionStorage.getItem('participant')) || {};
+            participantData.handwritingAccuracy = accuracy + '%';
+            sessionStorage.setItem('participant', JSON.stringify(participantData));
+
+            window.location.href = 'reading-test.html';
+        }
+
+        window.onload = loadItem;
+    </script>
+</body>
+</html>

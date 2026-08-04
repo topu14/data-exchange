@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Exchange Operator Evaluation - Typing Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 min-h-screen relative flex items-center justify-center p-4 md:p-8">
+
+    <!-- Corner Logo -->
+    <div class="absolute top-6 left-6 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+        <img src="image_0.png" alt="Data Exchange Logo" class="h-8 object-contain">
+    </div>
+
+    <div class="max-w-5xl w-full bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-white/20">
+        <!-- Header Section -->
+        <div class="text-center mb-8 border-b border-slate-200 pb-6">
+            <h1 class="text-2xl font-extrabold text-slate-900">Data Exchange Operator Evaluation Process</h1>
+            
+            <div class="mt-4 flex flex-col items-center gap-1">
+                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Step 2 of 4</span>
+                <h2 class="text-xl font-bold text-slate-800">Typing Proficiency Test</h2>
+            </div>
+            <p class="text-sm text-slate-500 mt-1">Type the text shown below as quickly and accurately as possible. The test runs continuously for 60 seconds.</p>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="grid grid-cols-3 gap-4 mb-8 bg-slate-50 p-5 rounded-2xl border border-slate-200 text-center shadow-inner">
+            <div>
+                <span class="block text-xs text-slate-500 font-medium uppercase">Time Left</span>
+                <span id="timer" class="text-2xl font-bold text-slate-800">60s</span>
+            </div>
+            <div>
+                <span class="block text-xs text-slate-500 font-medium uppercase">Speed</span>
+                <span id="wpm" class="text-2xl font-bold text-indigo-600">0 WPM</span>
+            </div>
+            <div>
+                <span class="block text-xs text-slate-500 font-medium uppercase">Accuracy</span>
+                <span id="accuracy" class="text-2xl font-bold text-emerald-600">100%</span>
+            </div>
+        </div>
+
+        <!-- Article Area -->
+        <div class="mb-4">
+            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Text to Type:</label>
+            <div id="sourceText" class="p-6 bg-slate-100 rounded-2xl border border-slate-200 text-slate-700 font-mono text-lg md:text-xl leading-relaxed select-none">
+                <!-- Infinite cycling text loads here -->
+            </div>
+        </div>
+
+        <!-- Typing Input Area -->
+        <div class="mb-6">
+            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Your Typing Input:</label>
+            <textarea id="typingInput" rows="5" placeholder="Click here and start typing the text above..." 
+                class="w-full p-5 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-mono text-lg md:text-xl text-slate-800 placeholder-slate-400 resize-none bg-white shadow-inner"
+                disabled></textarea>
+        </div>
+
+        <button id="nextBtn" onclick="proceedToNextStep()" disabled
+            class="w-full bg-slate-200 text-slate-400 font-medium py-4 rounded-2xl transition shadow-sm cursor-not-allowed text-lg">
+            Complete Test to Proceed &rarr;
+        </button>
+    </div>
+
+    <script>
+        const articlePool = [
+            "Data processing and accurate transcription are critical core competencies for modern data exchange operators. Efficiency combined with precision ensures seamless database synchronization and high-quality information management across global digital networks.",
+            "Cloud computing infrastructure requires robust security protocols and real-time monitoring to prevent data leaks. System administrators maintain operational integrity by auditing user access logs and performing routine automated system backups.",
+            "Effective digital communication relies on structured formatting protocols and reliable network architecture. Technical teams coordinate software updates to minimize downtime and enhance user experience across all enterprise platforms.",
+            "Information security management systems demand rigorous compliance checks and continuous vulnerability assessments. Network engineers deploy advanced encryption standards to safeguard confidential enterprise assets against emerging cyber threats.",
+            "Digital archiving protocols require systematic categorization and metadata tagging for rapid file retrieval. Operational teams utilize automated workflow pipelines to streamline document processing across multi-platform environments."
+        ];
+
+        let currentParagraphIndex = Math.floor(Math.random() * articlePool.length);
+        let sampleTextString = articlePool[currentParagraphIndex];
+        document.getElementById('sourceText').innerText = sampleTextString;
+
+        const typingInput = document.getElementById('typingInput');
+        const timerDisplay = document.getElementById('timer');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const nextBtn = document.getElementById('nextBtn');
+
+        let timeLeft = 60;
+        let timerInterval = null;
+        let isStarted = false;
+        
+        let totalCorrectCharsAllTime = 0;
+        let totalTypedCharsAllTime = 0;
+        let finalWpm = 0;
+        let finalAccuracy = 100;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            typingInput.removeAttribute('disabled');
+            typingInput.focus();
+        });
+
+        typingInput.addEventListener('input', () => {
+            if (!isStarted) {
+                isStarted = true;
+                startTimer();
+            }
+
+            const typedValue = typingInput.value;
+            let currentTypedLen = typedValue.length;
+            let currentCorrect = 0;
+
+            for (let i = 0; i < currentTypedLen; i++) {
+                if (i < sampleTextString.length && typedValue[i] === sampleTextString[i]) {
+                    currentCorrect++;
+                }
+            }
+
+            // If the user finishes the current paragraph, cycle to the next one instantly without losing progress
+            if (currentTypedLen >= sampleTextString.length) {
+                totalCorrectCharsAllTime += currentCorrect;
+                totalTypedCharsAllTime += currentTypedLen;
+
+                // Pick a new unique paragraph
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * articlePool.length);
+                } while (newIndex === currentParagraphIndex);
+                
+                currentParagraphIndex = newIndex;
+                sampleTextString = articlePool[currentParagraphIndex];
+                document.getElementById('sourceText').innerText = sampleTextString;
+                
+                // Reset textarea for the next loop
+                typingInput.value = '';
+                return;
+            }
+
+            // Calculate live totals including current text box progress
+            let grandCorrect = totalCorrectCharsAllTime + currentCorrect;
+            let grandTyped = totalTypedCharsAllTime + currentTypedLen;
+
+            let currentAccuracy = grandTyped > 0 ? Math.round((grandCorrect / grandTyped) * 100) : 100;
+            accuracyDisplay.innerText = currentAccuracy + '%';
+            finalAccuracy = currentAccuracy;
+
+            const timeElapsedMinutes = (60 - timeLeft) / 60;
+            if (timeElapsedMinutes > 0) {
+                const wordsTyped = (grandCorrect / 5);
+                finalWpm = Math.round(wordsTyped / timeElapsedMinutes);
+                wpmDisplay.innerText = finalWpm + ' WPM';
+            }
+        });
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = timeLeft + 's';
+
+                // Recalculate WPM in case user stopped typing right at the end
+                const typedValue = typingInput.value;
+                let currentCorrect = 0;
+                for (let i = 0; i < typedValue.length; i++) {
+                    if (i < sampleTextString.length && typedValue[i] === sampleTextString[i]) {
+                        currentCorrect++;
+                    }
+                }
+                let grandCorrect = totalCorrectCharsAllTime + currentCorrect;
+                let grandTyped = totalTypedCharsAllTime + typedValue.length;
+                let timeElapsedMinutes = (60 - timeLeft) / 60;
+                if (timeElapsedMinutes > 0 && grandCorrect > 0) {
+                    finalWpm = Math.round((grandCorrect / 5) / timeElapsedMinutes);
+                    wpmDisplay.innerText = finalWpm + ' WPM';
+                }
+
+                if (timeLeft <= 0) {
+                    endTest();
+                }
+            }, 1000);
+        }
+
+        function endTest() {
+            clearInterval(timerInterval);
+            typingInput.setAttribute('disabled', 'true');
+            nextBtn.removeAttribute('disabled');
+            nextBtn.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-4 rounded-2xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-lg";
+            nextBtn.innerText = "Proceed to Handwriting Test (Step 3) \u2192";
+        }
+
+        function proceedToNextStep() {
+            let participantData = JSON.parse(sessionStorage.getItem('participant')) || {};
+            participantData.typingWpm = finalWpm;
+            participantData.typingAccuracy = finalAccuracy + '%';
+            sessionStorage.setItem('participant', JSON.stringify(participantData));
+            window.location.href = 'handwriting-test.html';
+        }
+    </script>
+</body>
+</html>

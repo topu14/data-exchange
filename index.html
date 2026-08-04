@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Exchange Operator Evaluation - Participant Information</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="min-h-screen relative flex items-center justify-center p-4 md:p-8 bg-cover bg-center bg-no-repeat" style="background-image: url('background.png');">
+    
+    <!-- Dark overlay to ensure crisp readability over any background image -->
+    <div class="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]"></div>
+
+    <div class="max-w-md w-full bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 relative z-10">
+        <!-- Header Section -->
+        <div class="text-center mb-8 border-b border-slate-100 pb-6">
+            <!-- Large Logo placed right above Data Exchange Operator -->
+            <div class="mb-6 flex justify-center">
+                <img src="image_0.png" alt="Data Exchange Logo" class="h-24 w-auto object-contain drop-shadow-md">
+            </div>
+
+            <h1 class="text-2xl font-extrabold text-slate-950 leading-tight">Data Exchange Operator</h1>
+            <h2 class="text-lg font-semibold text-indigo-700 mt-1">Evaluation Process</h2>
+
+            <div class="mt-6 flex flex-col items-center gap-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Step 1 of 4</span>
+                <h3 class="text-xl font-bold text-slate-800">Participant Information</h3>
+            </div>
+            <p class="text-sm text-slate-500 mt-2">Please fill out your details to begin the evaluation.</p>
+        </div>
+
+        <!-- Form -->
+        <form id="participantForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                <input type="text" id="name" required 
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-800 placeholder-slate-400 bg-white shadow-inner"
+                    placeholder="John Doe">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                <input type="email" id="email" required 
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-800 placeholder-slate-400 bg-white shadow-inner"
+                    placeholder="john@example.com">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                <input type="tel" id="phone" required 
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-800 placeholder-slate-400 bg-white shadow-inner"
+                    placeholder="+1 (555) 000-0000">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Gender</label>
+                    <select id="gender" required 
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-800 bg-white shadow-inner">
+                        <option value="" disabled selected>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Age</label>
+                    <input type="number" id="age" required min="1" max="120" 
+                        class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-slate-800 placeholder-slate-400 bg-white shadow-inner"
+                        placeholder="25">
+                </div>
+            </div>
+
+            <button type="submit" 
+                class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3.5 rounded-xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-lg">
+                Proceed to Typing Test &rarr;
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const participantData = {};
+
+        document.getElementById('participantForm').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            participantData.name = document.getElementById('name').value.trim();
+            participantData.email = document.getElementById('email').value.trim();
+            participantData.phone = document.getElementById('phone').value.trim();
+            participantData.gender = document.getElementById('gender').value;
+            participantData.age = document.getElementById('age').value;
+            sessionStorage.setItem('participant', JSON.stringify(participantData));
+            window.location.href = 'typing-test.html';
+        });
+    </script>
+</body>
+</html>
