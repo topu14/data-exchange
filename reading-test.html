@@ -1,154 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Exchange Operator Evaluation - Reading Test</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-</head>
-<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 min-h-screen relative flex items-center justify-center p-4 md:p-8">
-
-    <div class="max-w-5xl w-full bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-white/20">
-        
-        <!-- Main Content Container -->
-        <div id="testContainer">
-            <!-- Header Section -->
-            <div class="text-center mb-8 border-b border-slate-200 pb-6">
-                <!-- Large Centered Logo -->
-                <div class="mb-6 flex justify-center">
-                    <img src="image_0.png" alt="Data Exchange Logo" class="h-24 w-auto object-contain drop-shadow-md">
-                </div>
-
-                <h1 class="text-2xl font-extrabold text-slate-900">Data Exchange Operator Evaluation Process</h1>
-                
-                <div class="mt-4 flex flex-col items-center gap-1">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Step 4 of 4</span>
-                    <h2 class="text-xl font-bold text-slate-800">Read-Aloud & Speech Accuracy Test</h2>
-                </div>
-                <p class="text-sm text-slate-500 mt-1">Read the article below aloud clearly into your microphone. Click stop whenever you finish.</p>
-            </div>
-
-            <!-- Microphone Status Bar -->
-            <div class="mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-500 uppercase">Microphone Status</span>
-                <span id="micStatus" class="text-sm font-bold text-amber-600">Waiting to start...</span>
-            </div>
-
-            <!-- Spacious Article Area (Full Rafiq Story) -->
-            <div class="mb-6">
-                <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Article to Read Aloud:</label>
-                <div id="sourceText" class="p-6 bg-slate-100 rounded-2xl border border-slate-200 text-slate-700 font-sans text-lg md:text-xl leading-relaxed select-none min-h-[200px]">
-                    Rafiq had always been passionate about his work. From the first day he started his career, he believed that success was not about luck—it was about dedication, patience, and continuous effort. In the beginning, things were not easy. His ideas were often rejected, his projects failed, and sometimes his efforts went unnoticed. Many of his colleagues chose easier paths or gave up when challenges appeared. But Rafiq had a different mindset. He viewed every failure as a valuable lesson and every obstacle as a stepping stone toward mastery. Over the years, his perseverance paid off. He mastered complex technical frameworks, sharpened his analytical skills, and earned a reputation for unmatched accuracy and reliability. Today, as a senior data exchange operator, Rafiq leads critical infrastructure projects, mentors incoming professionals, and continues to approach every single task with the exact same passion and meticulous attention to detail.
-                </div>
-            </div>
-
-            <!-- Live Speech Feed Area -->
-            <div class="mb-8">
-                <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Live Speech Feed (What the System Hears):</label>
-                <div id="speechFeed" class="w-full p-5 rounded-2xl border border-slate-300 bg-white font-mono text-lg text-slate-800 min-h-[120px] max-h-[160px] overflow-y-auto shadow-inner">
-                    Press "Start Reading Test" and begin speaking the text above...
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="grid grid-cols-2 gap-4">
-                <button id="startBtn" onclick="startReadingTest()" 
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-4 rounded-2xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-lg">
-                    Start Reading Test
-                </button>
-                <button id="stopBtn" onclick="stopAndSubmitTest()" disabled
-                    class="bg-slate-200 text-slate-400 font-medium py-4 rounded-2xl transition shadow-sm cursor-not-allowed text-lg">
-                    Stop & Submit Test
-                </button>
-            </div>
-        </div>
-
-        <!-- Thank You Screen (Hidden by default) -->
-        <div id="thankYouScreen" class="hidden text-center py-8">
-            <!-- Large Logo placed right above the thank you message -->
-            <div class="mb-6 flex justify-center">
-                <img src="image_0.png" alt="Data Exchange Logo" class="h-24 md:h-28 w-auto object-contain drop-shadow-md">
-            </div>
-
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl font-bold shadow-inner">
-                ✓
-            </div>
-            <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Thank you for your participation.</h2>
-            <p class="text-slate-500 text-lg max-w-md mx-auto">Your evaluation has been successfully completed and recorded. You may now close this window.</p>
-        </div>
-
-    </div>
-
-    <script>
+<script>
         const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwN_GTspp0wGzKwyGuWxnCAQ6W_AgQ_fTccL5lBDOlnrxth2pu_6Cb4biZSodkM82JPog/exec";
 
-        const sourceTextEl = document.getElementById('sourceText');
-        const speechFeedEl = document.getElementById('speechFeed');
-        const micStatusEl = document.getElementById('micStatus');
-        const startBtn = document.getElementById('startBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const testContainer = document.getElementById('testContainer');
-        const thankYouScreen = document.getElementById('thankYouScreen');
-
-        let recognition = null;
-        let transcriptText = "";
-        let isTestActive = false;
-
-        function startReadingTest() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Speech recognition is not supported in this browser. Please use Google Chrome.");
-                return;
-            }
-
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            
-            // Set to Indian English ('en-IN') for optimal phonetic compatibility with Bangladeshi accents
-            recognition.lang = 'en-IN'; 
-
-            isTestActive = true;
-
-            recognition.onstart = function() {
-                micStatusEl.innerText = "Listening actively...";
-                micStatusEl.className = "text-sm font-bold text-emerald-600 animate-pulse";
-                startBtn.disabled = true;
-                startBtn.className = "bg-slate-200 text-slate-400 font-medium py-4 rounded-2xl transition shadow-sm cursor-not-allowed text-lg";
-                stopBtn.disabled = false;
-                stopBtn.className = "bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-4 rounded-2xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-lg";
-            };
-
-            recognition.onresult = function(event) {
-                let interim = "";
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        transcriptText += event.results[i][0].transcript + " ";
-                    } else {
-                        interim += event.results[i][0].transcript;
-                    }
-                }
-                speechFeedEl.innerText = transcriptText + interim;
-            };
-
-            recognition.onerror = function(event) {
-                console.error("Speech recognition error", event.error);
-            };
-
-            recognition.onend = function() {
-                if (isTestActive) {
-                    try {
-                        recognition.start();
-                    } catch (e) {
-                        console.error("Restart error:", e);
-                    }
-                } else {
-                    micStatusEl.innerText = "Microphone stopped.";
-                }
-            };
-
-            recognition.start();
-        }
+        // ... [keep your setup code as is] ...
 
         function stopAndSubmitTest() {
             isTestActive = false;
@@ -171,7 +24,6 @@
                 }
             });
 
-            // Flexible matching calculation with an accent-friendly multiplier scale factor
             let rawAccuracy = sourceWords.length > 0 && spokenWords.length > 0 && spokenWords[0] !== "" 
                 ? (matchedWords / sourceWords.length) * 100 
                 : 0;
@@ -182,7 +34,8 @@
             participantData.readingAccuracy = readingAccuracy + '%';
             participantData.timestamp = new Date().toISOString();
 
-            if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL !== "https://script.google.com/macros/s/AKfycbwN_GTspp0wGzKwyGuWxnCAQ6W_AgQ_fTccL5lBDOlnrxth2pu_6Cb4biZSodkM82JPog/exec") {
+            // FIXED: Compare against the placeholder string so your actual URL triggers the fetch
+            if (GOOGLE_SHEET_URL && GOOGLE_SHEET_URL !== "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE") {
                 fetch(GOOGLE_SHEET_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -197,5 +50,3 @@
             thankYouScreen.classList.remove('hidden');
         }
     </script>
-</body>
-</html>
