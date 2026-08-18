@@ -203,7 +203,6 @@
     <div class="main-layout">
         <div class="call-container">
             <div>
-                <!-- Centered Logo right above the title -->
                 <div class="flex justify-center mb-2">
                     <img src="image_0.png" alt="Data Exchange Logo" class="h-10 w-auto object-contain drop-shadow-sm">
                 </div>
@@ -212,9 +211,7 @@
                 <div id="status">কল শুরু করার জন্য নিচের বাটনে ক্লিক করুন</div>
             </div>
 
-            <!-- Computer Monitor Structure -->
             <div class="video-box">
-                <!-- Monitor Top Header Bar -->
                 <div class="bg-slate-200 px-4 py-1.5 flex items-center justify-between border-b border-slate-300 z-30">
                     <div class="flex items-center gap-1.5">
                         <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
@@ -225,7 +222,6 @@
                     <div class="text-[10px] text-slate-600 font-mono">Ruby_AI_Interview.exe</div>
                 </div>
 
-                <!-- Monitor Screen Area -->
                 <div class="relative w-full flex-1 bg-[#eef2f5] overflow-hidden flex items-center justify-center p-4">
                     <div class="absolute inset-0 opacity-15 bg-center bg-no-repeat bg-contain pointer-events-none" style="background-image: url('image_0.png');"></div>
 
@@ -257,7 +253,6 @@
             
             <div id="question-box">ইন্টারভিউ কল রিসিভ করতে প্রস্তুত হন। সংযোগের জন্য অপেক্ষা করা হচ্ছে।</div>
 
-            <!-- Circular Embossed Button -->
             <button id="start-btn" class="call-btn" onclick="startInterview()" title="কল রিসিভ করুন">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
@@ -267,7 +262,6 @@
 
         <div class="side-control-panel">
             <div>
-                <!-- Audio/Mic Meter Indicator -->
                 <div id="micIndicatorBadge" class="flex items-center justify-between bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 shadow-inner mb-4">
                     <div class="flex items-center gap-2">
                         <div id="micBars" class="flex items-center gap-1 opacity-40">
@@ -311,7 +305,6 @@
             "Why_This_Job": { text: "এই জবটা কেন করতে চাচ্ছেন?", video: "q6.mp4" }
         };
 
-        // Background Video Preloader to cache all videos on Vercel and eliminate blank screen delay
         const videoFiles = ["q1.mp4", "q2.mp4", "q3.mp4", "q4.mp4", "student_q.mp4", "q5.mp4", "job_check.mp4", "salary_q.mp4", "q6.mp4", "repeat.mp4", "waiting.mp4", "closing.mp4"];
         videoFiles.forEach(file => {
             const preloadVid = document.createElement('video');
@@ -381,329 +374,4 @@
                 osc2.type = 'sine';
                 osc2.frequency.value = 480;
 
-                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                osc1.connect(gainNode);
-                osc2.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-
-                osc1.start();
-                osc2.start();
-
-                setTimeout(() => {
-                    osc1.stop();
-                    osc2.stop();
-                    audioCtx.close();
-                }, 2000);
-            } catch (e) {
-                console.log("Audio context error:", e);
-            }
-        }
-
-        function startInterview() {
-            document.getElementById('start-btn').style.display = 'none';
-            document.getElementById('status').innerText = "রুবির সাথে কানেক্ট করা হচ্ছে...";
-            document.getElementById('question-box').innerText = "রিং হচ্ছে... অনুগ্রহ করে অপেক্ষা করুন...";
-            
-            const placeholder = document.getElementById('videoPlaceholder');
-            placeholder.innerHTML = `
-                <div class="relative z-10 bg-white/90 backdrop-blur-md px-8 py-6 rounded-2xl shadow-lg border border-slate-200/80 flex flex-col items-center animate-pulse">
-                    <div class="w-16 h-16 bg-indigo-50 border border-indigo-200 rounded-full flex items-center justify-center mb-4 shadow-sm">
-                        <svg class="w-8 h-8 text-indigo-600 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-slate-900 font-bold text-lg tracking-wide">Calling Rubi...</span>
-                    <span class="text-slate-500 text-xs mt-1">Establishing Secure Connection</span>
-                </div>
-            `;
-
-            playCallingSound();
-
-            setTimeout(function() {
-                playStep("Name");
-            }, 2000);
-        }
-
-        function stopRecognition() {
-            if (recognition) {
-                try { recognition.stop(); } catch(e) {}
-                recognition = null;
-            }
-            if (silenceTimer) {
-                clearTimeout(silenceTimer);
-                silenceTimer = null;
-            }
-        }
-
-        function playStep(stepName) {
-            stopRecognition();
-            isProcessing = false;
-            currentStep = stepName;
-            accumulatedTranscript = "";
-            hasUserStartedSpeaking = false;
-            isManualTypingActive = false;
-            
-            updateMicIndicator('speaking');
-
-            const placeholder = document.getElementById('videoPlaceholder');
-            if (placeholder) {
-                placeholder.classList.add('hidden');
-            }
-
-            document.getElementById('speech-preview').innerText = "রুবি কথা বলছে... অনুগ্রহ করে শুনুন...";
-            document.getElementById('manual-input').value = "";
-
-            let currentItem = stepData[stepName];
-            document.getElementById('question-box').innerText = currentItem.text;
-            document.getElementById('status').innerText = "রুবি কথা বলছে...";
-
-            rubyVideo.loop = false;
-            rubyVideo.src = currentItem.video;
-            rubyVideo.muted = false;
-            rubyVideo.load();
-
-            rubyVideo.onended = function() {
-                startWaitingMode();
-            };
-
-            rubyVideo.play().catch(error => {
-                startWaitingMode();
-            });
-        }
-
-        function playRepeatVideo() {
-            if (isProcessing) return;
-            isProcessing = true;
-            stopRecognition();
-            updateMicIndicator('speaking');
-
-            document.getElementById('speech-preview').innerText = "রুবি আবার প্রশ্নটি করছে...";
-            document.getElementById('manual-input').value = "";
-
-            document.getElementById('status').innerText = "রুবি আবার প্রশ্নটি করছে...";
-            rubyVideo.loop = false;
-            rubyVideo.src = "repeat.mp4"; 
-            rubyVideo.muted = false;
-            rubyVideo.load();
-
-            rubyVideo.onended = function() {
-                playStep(currentStep);
-            };
-
-            rubyVideo.play().catch(error => {
-                playStep(currentStep);
-            });
-        }
-
-        function playClosingVideo() {
-            stopRecognition();
-            updateMicIndicator('speaking');
-            
-            document.getElementById('speech-preview').innerText = "ইন্টারভিউ সম্পন্ন হয়েছে।";
-            document.getElementById('manual-input').value = "";
-
-            document.getElementById('question-box').innerText = "আপনাকে অনেক ধন্যবাদ, আমাকে এই প্রশ্নগুলোর উত্তর দিয়ে সহযোগিতা করার জন্য। আপনি এখন পরের ধাপ মানে আমাদের টাইপিং টেস্টে অংশগ্রহণ করতে পারবেন।";
-            document.getElementById('status').innerText = "ইন্টারভিউ সফলভাবে সম্পন্ন হয়েছে!";
-
-            rubyVideo.loop = false;
-            rubyVideo.src = "closing.mp4";
-            rubyVideo.muted = false;
-            rubyVideo.load();
-
-            rubyVideo.onended = function() {
-                rubyVideo.pause();
-                submitDataToGoogleSheet();
-                document.getElementById('typing-btn').style.display = 'block';
-                updateMicIndicator('standby');
-            };
-
-            rubyVideo.play().catch(error => {
-                submitDataToGoogleSheet();
-                document.getElementById('typing-btn').style.display = 'block';
-                updateMicIndicator('standby');
-            });
-        }
-
-        function startWaitingMode() {
-            if (isProcessing) return;
-            document.getElementById('status').innerText = "আপনার উত্তর শোনার জন্য অপেক্ষা করা হচ্ছে...";
-            
-            document.getElementById('speech-preview').innerText = "কথা বলা শুরু করুন...";
-
-            updateMicIndicator('listening');
-
-            rubyVideo.src = "waiting.mp4"; 
-            rubyVideo.loop = true;
-            rubyVideo.muted = true;
-            rubyVideo.load();
-            rubyVideo.play().catch(e => {});
-
-            setTimeout(function() {
-                if (!isProcessing && !isManualTypingActive) {
-                    startListening();
-                }
-            }, 1000);
-        }
-
-        function startListening() {
-            if (isManualTypingActive) return;
-
-            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!window.SpeechRecognition) return;
-
-            stopRecognition();
-            recognition = new SpeechRecognition();
-            recognition.lang = 'bn-BD'; 
-            recognition.interimResults = true;
-            recognition.continuous = true;
-            recognition.maxAlternatives = 1;
-
-            recognition.onresult = function(event) {
-                if (isProcessing || isManualTypingActive) return;
-                
-                let interim = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        accumulatedTranscript += " " + event.results[i][0].transcript;
-                    } else {
-                        interim += event.results[i][0].transcript;
-                    }
-                }
-
-                let currentText = (accumulatedTranscript + " " + interim).trim();
-                if (currentText) {
-                    document.getElementById('speech-preview').innerText = currentText;
-                    hasUserStartedSpeaking = true;
-                    document.getElementById('status').innerText = "আপনার কথা শোনা হচ্ছে... (৫ সেকেন্ড চুপ থাকলে সাবমিট হবে)";
-
-                    if (silenceTimer) {
-                        clearTimeout(silenceTimer);
-                        silenceTimer = null;
-                    }
-
-                    silenceTimer = setTimeout(function() {
-                        if (!isProcessing && hasUserStartedSpeaking && !isManualTypingActive) {
-                            processUserAnswer();
-                        }
-                    }, 5000);
-                }
-            };
-
-            recognition.onend = function() {
-                if (!isProcessing && !isManualTypingActive) {
-                    try { recognition.start(); } catch(e) {}
-                }
-            };
-
-            recognition.start();
-        }
-
-        function onManualTyping() {
-            isManualTypingActive = true;
-            stopRecognition();
-            updateMicIndicator('standby');
-            
-            let typedText = document.getElementById('manual-input').value;
-            document.getElementById('speech-preview').innerText = typedText;
-            document.getElementById('status').innerText = "ম্যানুয়াল টাইপিং মোড সক্রিয়";
-        }
-
-        function processUserAnswer() {
-            if (isProcessing) return;
-            isProcessing = true;
-            stopRecognition();
-            updateMicIndicator('standby');
-
-            let userReply = "";
-            if (isManualTypingActive) {
-                userReply = document.getElementById('manual-input').value.trim().toLowerCase();
-            } else {
-                userReply = document.getElementById('speech-preview').innerText.trim().toLowerCase();
-                if (!userReply || userReply === "কথা বলা শুরু করুন...") {
-                    userReply = accumulatedTranscript.trim().toLowerCase();
-                }
-            }
-
-            console.log("Processed Answer for " + currentStep + ": " + userReply);
-
-            const repeatTriggers = ["স্যরি", "sorry", "সরি", "আবার", "বলবেন", "শুনিনি", "বুঝিনি", "বুঝি নাই", "শুনতে পাইনি", "আরেকবার", "বুঝতে পারিনি"];
-            let needsRepeat = repeatTriggers.some(trigger => userReply.includes(trigger));
-
-            if (needsRepeat && userReply.length < 30 && !isManualTypingActive) {
-                playRepeatVideo();
-            } else {
-                sessionAnswers[currentStep] = userReply || "কোনো উত্তর দেওয়া হয়নি";
-
-                if (currentStep === "Name") {
-                    playStep("Location");
-                } else if (currentStep === "Location") {
-                    playStep("Local_Rent");
-                } else if (currentStep === "Local_Rent") {
-                    playStep("Current_Status");
-                } else if (currentStep === "Current_Status") {
-                    let isStudy = userReply.includes("study") || userReply.includes("পড়াশোনা") || userReply.includes("স্টাডি") || userReply.includes("কলেজে") || userReply.includes("অনার্স") || userReply.includes("ডিগ্রি") || userReply.includes("মাস্টার্স") || userReply.includes("ডিপ্লোমা") || userReply.includes("ছাত্র") || userReply.includes("ছাত্রী") || userReply.includes("ইউনিভার্সিটি");
-
-                    if (isStudy) {
-                        playStep("College_Study");
-                    } else {
-                        playStep("Family");
-                    }
-                } else if (currentStep === "College_Study") {
-                    playStep("Family");
-                } else if (currentStep === "Family") {
-                    playStep("Job_Exp");
-                } else if (currentStep === "Job_Exp") {
-                    let hasExperience = userReply.includes("হ্যাঁ") || userReply.includes("হ্যা") || userReply.includes("জব") || userReply.includes("কোম্পানীতে") || userReply.includes("কোম্পানিতে") || userReply.includes("করেছি") || userReply.includes("হুম") || userReply.includes("কিছুদিন") || userReply.includes("অভিজ্ঞতা");
-
-                    if (hasExperience) {
-                        playStep("Prev_Salary");
-                    } else {
-                        playStep("Why_This_Job");
-                    }
-                } else if (currentStep === "Prev_Salary") {
-                    playStep("Why_This_Job");
-                } else if (currentStep === "Why_This_Job") {
-                    playClosingVideo();
-                }
-            }
-        }
-
-        function submitDataToGoogleSheet() {
-            let existingParticipant = JSON.parse(sessionStorage.getItem('participant')) || {};
-            
-            let finalPayload = {
-                ...existingParticipant,
-                interviewAnswers: sessionAnswers
-            };
-
-            sessionStorage.setItem('participant', JSON.stringify(finalPayload));
-
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx--hBeyqxxgxjLhB9gbsipJ3A4B9dZPUL4q4XP6W1rL0v1_NOYhVEjAMKkt-SzclA5Og/exec"; 
-
-            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE") {
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(finalPayload)
-                })
-                .then(() => {
-                    console.log("Interview data successfully submitted to Google Sheet.");
-                })
-                .catch(error => {
-                    console.error("Error submitting data:", error);
-                });
-            } else {
-                console.log("Google Script URL is not configured yet. Data saved in sessionStorage.");
-            }
-        }
-
-        function goToTypingTest() {
-            window.location.href = "typing-test.html"; 
-        }
-    </script>
-</body>
-</html>
+                gainNode.gain.setValue
