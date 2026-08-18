@@ -479,21 +479,29 @@
 
             document.getElementById('speech-preview').innerText = "রুবি আবার প্রশ্নটি করছে...";
             document.getElementById('manual-input').value = "";
-
             document.getElementById('status').innerText = "রুবি আবার প্রশ্নটি করছে...";
+
             rubyVideo.loop = false;
             rubyVideo.src = "repeat.mp4"; 
             rubyVideo.muted = false;
             rubyVideo.load();
 
-            rubyVideo.onended = function() {
+            let hasResumed = false;
+            function resumeFlow() {
+                if (hasResumed) return;
+                hasResumed = true;
                 isProcessing = false;
                 playStep(currentStep);
-            };
+            }
 
-            rubyVideo.play().catch(error => {
-                isProcessing = false;
-                playStep(currentStep);
+            rubyVideo.onended = resumeFlow;
+            rubyVideo.onerror = resumeFlow;
+
+            rubyVideo.play().then(() => {
+                // Safety fallback timeout in case video onended fails to fire on Vercel
+                setTimeout(resumeFlow, 5000);
+            }).catch(error => {
+                resumeFlow();
             });
         }
 
@@ -577,11 +585,11 @@
                     document.getElementById('speech-preview').innerText = currentText;
                     hasUserStartedSpeaking = true;
 
-                    // INSTANT REPEAT CHECK
-                    const repeatTriggers = ["স্যরি", "sorry", "সরি", "আবার", "বলবেন", "শুনিনি", "বুঝিনি", "বুঝি নাই", "শুনতে পাইনি", "আরেকবার", "বুঝতে পারিনি", "রিপিট"];
+                    // INSTANT REPEAT CHECK with comprehensive Bengali & English triggers
+                    const repeatTriggers = ["স্যরি", "sorry", "সরি", "আবার", "বলবেন", "শুনিনি", "বুঝিনি", "বুঝি নাই", "শুনতে পাইনি", "শুনতে পাই নি", "আরেকবার", "বুঝতে পারিনি", "রিপিট", "শুনতে পাচ্ছি না"];
                     let needsRepeat = repeatTriggers.some(trigger => currentText.includes(trigger));
 
-                    if (needsRepeat && currentText.length < 40) {
+                    if (needsRepeat) {
                         isProcessing = true;
                         stopRecognition();
                         playRepeatVideo();
@@ -640,10 +648,10 @@
 
             console.log("Processed Answer for " + currentStep + ": " + userReply);
 
-            const repeatTriggers = ["স্যরি", "sorry", "সরি", "আবার", "বলবেন", "শুনিনি", "বুঝিনি", "বুঝি নাই", "শুনতে পাইনি", "আরেকবার", "বুঝতে পারিনি", "রিপিট"];
+            const repeatTriggers = ["স্যরি", "sorry", "সরি", "আবার", "বলবেন", "শুনিনি", "বুঝিনি", "বুঝি নাই", "শুনতে পাইনি", "শুনতে পাই নি", "আরেকবার", "বুঝতে পারিনি", "রিপিট", "শুনতে পাচ্ছি না"];
             let needsRepeat = repeatTriggers.some(trigger => userReply.includes(trigger));
 
-            if (needsRepeat && userReply.length < 40 && !isManualTypingActive) {
+            if (needsRepeat && !isManualTypingActive) {
                 playRepeatVideo();
             } else {
                 sessionAnswers[currentStep] = userReply || "কোনো উত্তর দেওয়া হয়নি";
