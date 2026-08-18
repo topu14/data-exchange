@@ -251,7 +251,7 @@
                     <div id="videoPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center z-20 transition-all duration-300">
                     </div>
 
-                    <video id="ruby-video" playsinline class="absolute inset-0 w-full h-full object-cover z-10"></video>
+                    <video id="ruby-video" playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover z-10"></video>
                 </div>
             </div>
             
@@ -310,6 +310,16 @@
             "Prev_Salary": { text: "আপনার আগের চাকরি বা কাজে আপনার বেতন বা স্যালারি কেমন ছিল?", video: "salary_q.mp4" },
             "Why_This_Job": { text: "এই জবটা কেন করতে চাচ্ছেন?", video: "q6.mp4" }
         };
+
+        // Background Video Preloader to cache all videos on Vercel and eliminate blank screen delay
+        const videoFiles = ["q1.mp4", "q2.mp4", "q3.mp4", "q4.mp4", "student_q.mp4", "q5.mp4", "job_check.mp4", "salary_q.mp4", "q6.mp4", "repeat.mp4", "waiting.mp4", "closing.mp4"];
+        videoFiles.forEach(file => {
+            const preloadVid = document.createElement('video');
+            preloadVid.src = file;
+            preloadVid.preload = "auto";
+            preloadVid.muted = true;
+            preloadVid.load();
+        });
 
         let currentStep = "Name"; 
         let sessionAnswers = {};
