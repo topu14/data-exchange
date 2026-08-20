@@ -52,7 +52,7 @@
             border: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             justify-content: space-between;
         }
         /* Computer Monitor Frame */
@@ -91,10 +91,10 @@
         #speech-preview {
             background: #f1f5f9;
             color: #047857;
-            padding: 12px;
+            padding: 10px 12px;
             border-radius: 10px;
             font-size: 14px;
-            min-height: 55px;
+            min-height: 45px;
             border: 1px solid #cbd5e1;
             text-align: left;
             word-break: break-word;
@@ -143,7 +143,7 @@
             background-color: #10b981;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 11px;
             font-size: 15px;
             font-weight: bold;
             border-radius: 10px;
@@ -156,8 +156,8 @@
         }
         .manual-input-box textarea {
             width: 100%;
-            height: 110px;
-            padding: 12px;
+            height: 90px;
+            padding: 10px;
             border-radius: 10px;
             border: 1px solid #cbd5e1;
             background: #f8fafc;
@@ -251,7 +251,7 @@
                     <div id="videoPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center z-20 transition-all duration-300">
                     </div>
 
-                    <video id="ruby-video" playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover z-10"></video>
+                    <video id="ruby-video" playsinline class="absolute inset-0 w-full h-full object-cover z-10"></video>
                 </div>
             </div>
             
@@ -268,7 +268,7 @@
         <div class="side-control-panel">
             <div>
                 <!-- Audio/Mic Meter Indicator -->
-                <div id="micIndicatorBadge" class="flex items-center justify-between bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 shadow-inner mb-4">
+                <div id="micIndicatorBadge" class="flex items-center justify-between bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 shadow-inner mb-3">
                     <div class="flex items-center gap-2">
                         <div id="micBars" class="flex items-center gap-1 opacity-40">
                             <span class="w-1.5 h-3 bg-slate-400 rounded-full"></span>
@@ -280,11 +280,11 @@
                     <span id="micStateText" class="text-xs font-bold text-slate-500 uppercase">Standby</span>
                 </div>
 
-                <h3 class="text-lg font-bold text-slate-800 border-b border-slate-200 pb-2">উত্তর প্রদান মাধ্যম</h3>
-                <div class="text-sm text-slate-600 mt-2">এআই মাইক্রোফোন লাইভ শুনছে অথবা আপনি নিচে লিখে দিতে পারেন:</div>
+                <h3 class="text-base font-bold text-slate-800 border-b border-slate-200 pb-1.5">উত্তর প্রদান মাধ্যম</h3>
+                <div class="text-xs text-slate-600 mt-1">এআই মাইক্রোফোন লাইভ শুনছে অথবা আপনি নিচে লিখে দিতে পারেন:</div>
             </div>
             
-            <div class="space-y-3">
+            <div class="space-y-2.5">
                 <div id="speech-preview">কল শুরু হওয়ার অপেক্ষায় আছি...</div>
 
                 <div id="manual-box" class="manual-input-box">
@@ -311,14 +311,18 @@
             "Why_This_Job": { text: "এই জবটা কেন করতে চাচ্ছেন?", video: "q6.mp4" }
         };
 
+        // BLOB CACHING: Preload all videos into memory as Blobs to prevent any network lag/freezing on Vercel
+        const videoBlobs = {};
         const videoFiles = ["q1.mp4", "q2.mp4", "q3.mp4", "q4.mp4", "student_q.mp4", "q5.mp4", "job_check.mp4", "salary_q.mp4", "q6.mp4", "repeat.mp4", "waiting.mp4", "closing.mp4"];
-        for (let i = 0; i < videoFiles.length; i++) {
-            const preloadVid = document.createElement('video');
-            preloadVid.src = videoFiles[i];
-            preloadVid.preload = "auto";
-            preloadVid.muted = true;
-            preloadVid.load();
-        }
+        
+        videoFiles.forEach(file => {
+            fetch(file)
+                .then(response => response.blob())
+                .then(blob => {
+                    videoBlobs[file] = URL.createObjectURL(blob);
+                })
+                .catch(err => console.log("Blob preload error for: " + file, err));
+        });
 
         let currentStep = "Name"; 
         let sessionAnswers = {};
@@ -344,7 +348,7 @@
                 `;
                 micStateText.innerText = "Speak Now";
                 micStateText.className = "text-xs font-bold text-emerald-600 uppercase tracking-wide animate-pulse";
-                micBadge.className = "flex items-center justify-between bg-emerald-50 px-4 py-3 rounded-xl border border-emerald-300 shadow-inner mb-4";
+                micBadge.className = "flex items-center justify-between bg-emerald-50 px-4 py-2.5 rounded-xl border border-emerald-300 shadow-inner mb-3";
             } else if (state === 'speaking') {
                 micBars.className = "flex items-center gap-1 opacity-100";
                 micBars.innerHTML = `
@@ -354,7 +358,7 @@
                 `;
                 micStateText.innerText = "Listening Ruby";
                 micStateText.className = "text-xs font-bold text-amber-600 uppercase tracking-wide";
-                micBadge.className = "flex items-center justify-between bg-amber-50 px-4 py-3 rounded-xl border border-amber-300 shadow-inner mb-4";
+                micBadge.className = "flex items-center justify-between bg-amber-50 px-4 py-2.5 rounded-xl border border-amber-300 shadow-inner mb-3";
             } else {
                 micBars.className = "flex items-center gap-1 opacity-40";
                 micBars.innerHTML = `
@@ -364,7 +368,7 @@
                 `;
                 micStateText.innerText = "Standby";
                 micStateText.className = "text-xs font-bold text-slate-500 uppercase tracking-wide";
-                micBadge.className = "flex items-center justify-between bg-slate-50 px-4 py-3 rounded-xl border border-slate-200 shadow-inner mb-4";
+                micBadge.className = "flex items-center justify-between bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 shadow-inner mb-3";
             }
         }
 
@@ -435,6 +439,26 @@
             }
         }
 
+        function playVideoSrc(fileName, isLooping = false, onEndedCallback = null) {
+            rubyVideo.loop = isLooping;
+            rubyVideo.onended = onEndedCallback;
+            
+            // Use cached Blob URL if available for instant playback without network lag
+            if (videoBlobs[fileName]) {
+                if (rubyVideo.src !== videoBlobs[fileName]) {
+                    rubyVideo.src = videoBlobs[fileName];
+                    rubyVideo.load();
+                }
+            } else {
+                rubyVideo.src = fileName;
+                rubyVideo.load();
+            }
+
+            rubyVideo.play().catch(e => {
+                console.log("Auto-play prevented or delayed:", e);
+            });
+        }
+
         function playStep(stepName) {
             stopRecognition();
             isProcessing = false;
@@ -457,22 +481,14 @@
             document.getElementById('question-box').innerText = currentItem.text;
             document.getElementById('status').innerText = "রুবি কথা বলছে...";
 
-            rubyVideo.loop = false;
-            rubyVideo.src = currentItem.video;
             rubyVideo.muted = false;
-            rubyVideo.load();
-
-            rubyVideo.onended = function() {
-                startWaitingMode();
-            };
-
-            rubyVideo.play().catch(error => {
+            playVideoSrc(currentItem.video, false, function() {
                 startWaitingMode();
             });
         }
 
         function playRepeatVideo() {
-            if (isProcessing) return;
+            if (isProcessing && rubyVideo.src.includes("repeat.mp4")) return;
             isProcessing = true;
             stopRecognition();
             updateMicIndicator('speaking');
@@ -481,27 +497,10 @@
             document.getElementById('manual-input').value = "";
             document.getElementById('status').innerText = "রুবি আবার প্রশ্নটি করছে...";
 
-            rubyVideo.loop = false;
-            rubyVideo.src = "repeat.mp4"; 
             rubyVideo.muted = false;
-            rubyVideo.load();
-
-            let hasResumed = false;
-            function resumeFlow() {
-                if (hasResumed) return;
-                hasResumed = true;
+            playVideoSrc("repeat.mp4", false, function() {
                 isProcessing = false;
                 playStep(currentStep);
-            }
-
-            rubyVideo.onended = resumeFlow;
-            rubyVideo.onerror = resumeFlow;
-
-            rubyVideo.play().then(() => {
-                // Safety fallback timeout in case video onended fails to fire on Vercel
-                setTimeout(resumeFlow, 5000);
-            }).catch(error => {
-                resumeFlow();
             });
         }
 
@@ -515,19 +514,9 @@
             document.getElementById('question-box').innerText = "আপনাকে অনেক ধন্যবাদ, আমাকে এই প্রশ্নগুলোর উত্তর দিয়ে সহযোগিতা করার জন্য। আপনি এখন পরের ধাপ মানে আমাদের টাইপিং টেস্টে অংশগ্রহণ করতে পারবেন।";
             document.getElementById('status').innerText = "ইন্টারভিউ সফলভাবে সম্পন্ন হয়েছে!";
 
-            rubyVideo.loop = false;
-            rubyVideo.src = "closing.mp4";
             rubyVideo.muted = false;
-            rubyVideo.load();
-
-            rubyVideo.onended = function() {
+            playVideoSrc("closing.mp4", false, function() {
                 rubyVideo.pause();
-                submitDataToGoogleSheet();
-                document.getElementById('typing-btn').style.display = 'block';
-                updateMicIndicator('standby');
-            };
-
-            rubyVideo.play().catch(error => {
                 submitDataToGoogleSheet();
                 document.getElementById('typing-btn').style.display = 'block';
                 updateMicIndicator('standby');
@@ -542,11 +531,8 @@
 
             updateMicIndicator('listening');
 
-            rubyVideo.src = "waiting.mp4"; 
-            rubyVideo.loop = true;
             rubyVideo.muted = true;
-            rubyVideo.load();
-            rubyVideo.play().catch(e => {});
+            playVideoSrc("waiting.mp4", true, null);
 
             setTimeout(function() {
                 if (!isProcessing && !isManualTypingActive) {
@@ -556,7 +542,7 @@
         }
 
         function startListening() {
-            if (isManualTypingActive) return;
+            if (isManualTypingActive || isProcessing) return;
 
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!window.SpeechRecognition) return;
@@ -585,7 +571,7 @@
                     document.getElementById('speech-preview').innerText = currentText;
                     hasUserStartedSpeaking = true;
 
-                    // INSTANT REPEAT CHECK with comprehensive Bengali & English triggers
+                    // INSTANT REPEAT CHECK
                     const repeatTriggers = ["স্যরি", "sorry", "সরি", "আবার", "বলবেন", "শুনিনি", "বুঝিনি", "বুঝি নাই", "শুনতে পাইনি", "শুনতে পাই নি", "আরেকবার", "বুঝতে পারিনি", "রিপিট", "শুনতে পাচ্ছি না"];
                     let needsRepeat = repeatTriggers.some(trigger => currentText.includes(trigger));
 
