@@ -6,59 +6,60 @@
     <title>Data Exchange Operator Evaluation - Typing Test</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 min-h-screen relative flex items-center justify-center p-4 md:p-8">
+<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 min-h-screen w-full flex items-center justify-center p-3 md:p-6">
 
-    <div class="max-w-5xl w-full bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 border border-white/20">
-        <!-- Header Section -->
-        <div class="text-center mb-8 border-b border-slate-200 pb-6">
-            <!-- Large Centered Logo -->
-            <div class="mb-6 flex justify-center">
-                <img src="image_0.png" alt="Data Exchange Logo" class="h-24 w-auto object-contain drop-shadow-md">
+    <div class="max-w-5xl w-full bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl p-6 md:p-8 border border-white/20">
+        
+        <!-- Header Section with Centered Logo -->
+        <div class="text-center mb-5 border-b border-slate-200 pb-4">
+            <!-- Centered Logo -->
+            <div class="mb-3 flex justify-center">
+                <img src="image_0.png" alt="Data Exchange Logo" class="h-12 w-auto object-contain drop-shadow-sm">
             </div>
 
-            <h1 class="text-2xl font-extrabold text-slate-900">Data Exchange Operator Evaluation Process</h1>
+            <h1 class="text-xl md:text-2xl font-extrabold text-slate-900">Data Exchange Operator Evaluation Process</h1>
             
-            <div class="mt-4 flex flex-col items-center gap-1">
-                <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Step 2 of 4</span>
-                <h2 class="text-xl font-bold text-slate-800">Typing Proficiency Test</h2>
+            <div class="mt-2 flex flex-col items-center gap-1">
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full">Step 2 of 4</span>
+                <h2 class="text-base md:text-lg font-bold text-slate-800">Typing Proficiency Test</h2>
             </div>
-            <p class="text-sm text-slate-500 mt-1">Type the text shown below as quickly and accurately as possible. The test runs continuously for 60 seconds.</p>
+            <p class="text-xs md:text-sm text-slate-500 mt-1">Type the text shown below as quickly and accurately as possible. The test runs continuously for 60 seconds.</p>
         </div>
 
-        <!-- Stats Bar -->
-        <div class="grid grid-cols-3 gap-4 mb-8 bg-slate-50 p-5 rounded-2xl border border-slate-200 text-center shadow-inner">
+        <!-- Stats Bar (Squeezed) -->
+        <div class="grid grid-cols-3 gap-3 mb-5 bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-center shadow-inner">
             <div>
-                <span class="block text-xs text-slate-500 font-medium uppercase">Time Left</span>
-                <span id="timer" class="text-2xl font-bold text-slate-800">60s</span>
+                <span class="block text-[10px] text-slate-500 font-medium uppercase">Time Left</span>
+                <span id="timer" class="text-xl md:text-2xl font-bold text-slate-800">60s</span>
             </div>
             <div>
-                <span class="block text-xs text-slate-500 font-medium uppercase">Speed</span>
-                <span id="wpm" class="text-2xl font-bold text-indigo-600">0 WPM</span>
+                <span class="block text-[10px] text-slate-500 font-medium uppercase">Speed</span>
+                <span id="wpm" class="text-xl md:text-2xl font-bold text-indigo-600">0 WPM</span>
             </div>
             <div>
-                <span class="block text-xs text-slate-500 font-medium uppercase">Accuracy</span>
-                <span id="accuracy" class="text-2xl font-bold text-emerald-600">100%</span>
+                <span class="block text-[10px] text-slate-500 font-medium uppercase">Accuracy</span>
+                <span id="accuracy" class="text-xl md:text-2xl font-bold text-emerald-600">100%</span>
             </div>
         </div>
 
-        <!-- Article Area -->
-        <div class="mb-4">
-            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Text to Type:</label>
-            <div id="sourceText" class="p-6 bg-slate-100 rounded-2xl border border-slate-200 text-slate-700 font-mono text-lg md:text-xl leading-relaxed select-none">
+        <!-- Article Area (Squeezed Height & Font) -->
+        <div class="mb-3">
+            <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Text to Type:</label>
+            <div id="sourceText" class="p-4 bg-slate-100 rounded-xl border border-slate-200 text-slate-700 font-mono text-sm md:text-base leading-relaxed select-none max-h-[110px] overflow-y-auto">
                 <!-- Infinite cycling text loads here -->
             </div>
         </div>
 
-        <!-- Typing Input Area -->
-        <div class="mb-6">
-            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">Your Typing Input:</label>
-            <textarea id="typingInput" rows="5" placeholder="Click here and start typing the text above..." 
-                class="w-full p-5 rounded-2xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-mono text-lg md:text-xl text-slate-800 placeholder-slate-400 resize-none bg-white shadow-inner"
+        <!-- Typing Input Area (Squeezed Height) -->
+        <div class="mb-4">
+            <label class="block text-[11px] font-semibold text-slate-500 uppercase mb-1">Your Typing Input:</label>
+            <textarea id="typingInput" rows="3" placeholder="Click here and start typing the text above..." 
+                class="w-full p-3.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition font-mono text-sm md:text-base text-slate-800 placeholder-slate-400 resize-none bg-white shadow-inner"
                 disabled></textarea>
         </div>
 
         <button id="nextBtn" onclick="proceedToNextStep()" disabled
-            class="w-full bg-slate-200 text-slate-400 font-medium py-4 rounded-2xl transition shadow-sm cursor-not-allowed text-lg">
+            class="w-full bg-slate-200 text-slate-400 font-medium py-3 rounded-xl transition shadow-sm cursor-not-allowed text-base">
             Complete Test to Proceed &rarr;
         </button>
     </div>
@@ -88,8 +89,6 @@
         
         let totalCorrectCharsAllTime = 0;
         let totalTypedCharsAllTime = 0;
-        let totalCorrectWordsAllTime = 0;
-        let totalTypedWordsAllTime = 0;
         let finalWpm = 0;
         let finalAccuracy = 100;
 
@@ -106,31 +105,18 @@
 
             const typedValue = typingInput.value;
             let currentTypedLen = typedValue.length;
-            let currentCorrectChars = 0;
+            let currentCorrect = 0;
 
             for (let i = 0; i < currentTypedLen; i++) {
                 if (i < sampleTextString.length && typedValue[i] === sampleTextString[i]) {
-                    currentCorrectChars++;
+                    currentCorrect++;
                 }
             }
 
-            // If the user finishes the current paragraph, cycle to the next one instantly without losing progress
             if (currentTypedLen >= sampleTextString.length) {
-                totalCorrectCharsAllTime += currentCorrectChars;
+                totalCorrectCharsAllTime += currentCorrect;
                 totalTypedCharsAllTime += currentTypedLen;
 
-                const sampleWords = sampleTextString.trim().split(/\s+/);
-                const typedWords = typedValue.trim().split(/\s+/);
-                let currentCorrectWords = 0;
-                for (let i = 0; i < typedWords.length; i++) {
-                    if (i < sampleWords.length && typedWords[i] === sampleWords[i]) {
-                        currentCorrectWords++;
-                    }
-                }
-                totalCorrectWordsAllTime += currentCorrectWords;
-                totalTypedWordsAllTime += typedWords.length;
-
-                // Pick a new unique paragraph
                 let newIndex;
                 do {
                     newIndex = Math.floor(Math.random() * articlePool.length);
@@ -140,36 +126,23 @@
                 sampleTextString = articlePool[currentParagraphIndex];
                 document.getElementById('sourceText').innerText = sampleTextString;
                 
-                // Reset textarea for the next loop
                 typingInput.value = '';
                 return;
             }
 
-            // Character metrics for WPM speed calculation
-            let grandCorrectChars = totalCorrectCharsAllTime + currentCorrectChars;
+            let grandCorrect = totalCorrectCharsAllTime + currentCorrect;
+            let grandTyped = totalTypedCharsAllTime + currentTypedLen;
+
+            let currentAccuracy = grandTyped > 0 ? Math.round((grandCorrect / grandTyped) * 100) : 100;
+            accuracyDisplay.innerText = currentAccuracy + '%';
+            finalAccuracy = currentAccuracy;
+
             const timeElapsedMinutes = (60 - timeLeft) / 60;
             if (timeElapsedMinutes > 0) {
-                const wordsTyped = (grandCorrectChars / 5);
+                const wordsTyped = (grandCorrect / 5);
                 finalWpm = Math.round(wordsTyped / timeElapsedMinutes);
                 wpmDisplay.innerText = finalWpm + ' WPM';
             }
-
-            // Word-by-word accuracy calculation to prevent single typos from cascading and tanking accuracy
-            const sampleWords = sampleTextString.trim().split(/\s+/);
-            const typedWords = typedValue.trim().split(/\s+/);
-            let currentCorrectWords = 0;
-            for (let i = 0; i < typedWords.length; i++) {
-                if (i < sampleWords.length && typedWords[i] === sampleWords[i]) {
-                    currentCorrectWords++;
-                }
-            }
-
-            let grandCorrectWords = totalCorrectWordsAllTime + currentCorrectWords;
-            let grandTypedWords = totalTypedWordsAllTime + typedWords.length;
-
-            let currentAccuracy = grandTypedWords > 0 ? Math.round((grandCorrectWords / grandTypedWords) * 100) : 100;
-            accuracyDisplay.innerText = currentAccuracy + '%';
-            finalAccuracy = currentAccuracy;
         });
 
         function startTimer() {
@@ -178,16 +151,17 @@
                 timerDisplay.innerText = timeLeft + 's';
 
                 const typedValue = typingInput.value;
-                let currentCorrectChars = 0;
+                let currentCorrect = 0;
                 for (let i = 0; i < typedValue.length; i++) {
                     if (i < sampleTextString.length && typedValue[i] === sampleTextString[i]) {
-                        currentCorrectChars++;
+                        currentCorrect++;
                     }
                 }
-                let grandCorrectChars = totalCorrectCharsAllTime + currentCorrectChars;
+                let grandCorrect = totalCorrectCharsAllTime + currentCorrect;
+                let grandTyped = totalTypedCharsAllTime + typedValue.length;
                 let timeElapsedMinutes = (60 - timeLeft) / 60;
-                if (timeElapsedMinutes > 0 && grandCorrectChars > 0) {
-                    finalWpm = Math.round((grandCorrectChars / 5) / timeElapsedMinutes);
+                if (timeElapsedMinutes > 0 && grandCorrect > 0) {
+                    finalWpm = Math.round((grandCorrect / 5) / timeElapsedMinutes);
                     wpmDisplay.innerText = finalWpm + ' WPM';
                 }
 
@@ -201,7 +175,7 @@
             clearInterval(timerInterval);
             typingInput.setAttribute('disabled', 'true');
             nextBtn.removeAttribute('disabled');
-            nextBtn.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-4 rounded-2xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-lg";
+            nextBtn.className = "w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 rounded-xl transition shadow-lg shadow-indigo-600/30 cursor-pointer text-base";
             nextBtn.innerText = "Proceed to Handwriting Test (Step 3) \u2192";
         }
 
